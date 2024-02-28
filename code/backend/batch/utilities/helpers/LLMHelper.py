@@ -55,8 +55,9 @@ class LLMHelper:
             )
 
     def get_llm35(self):
+        # TODO: Move to settings
         return AzureChatOpenAI(
-            deployment_name="gpt-35-turbo",
+            deployment_name="gpt-35-turbo-16k",
             temperature=0,
             max_tokens=self.llm_max_tokens,
             openai_api_version=self.openai_client._api_version,
