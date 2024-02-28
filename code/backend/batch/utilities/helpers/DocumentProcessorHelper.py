@@ -5,6 +5,8 @@ from .DocumentLoadingHelper import DocumentLoading, LoadingSettings
 from .DocumentChunkingHelper import DocumentChunking, ChunkingSettings
 from ..common.SourceDocument import SourceDocument
 
+import time
+
 logger = logging.getLogger(__name__)
 
 
@@ -32,9 +34,12 @@ class DocumentProcessor:
                 documents = document_loading.load(source_url, processor.loading)
                 documents = document_chunking.chunk(documents, processor.chunking)
                 keys = list(map(lambda x: x.id, documents))
-                documents = [
-                    document.convert_to_langchain_document() for document in documents
-                ]
+                documents = [document.convert_to_langchain_document() for document in documents]
+                
+                #sync wait for 10 seconds
+                
+                time.sleep(10)
+                
                 return vector_store.add_documents(documents=documents, keys=keys)
             except Exception as e:
                 logging.error(f"Error adding embeddings for {source_url}: {e}")

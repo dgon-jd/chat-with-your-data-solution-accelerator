@@ -3,6 +3,8 @@ import json
 import os
 import azure.functions as func
 import sys
+import time
+
 from azure.storage.queue import QueueClient, BinaryBase64EncodePolicy
 from utilities.helpers.AzureBlobStorageHelper import AzureBlobStorageClient
 
@@ -36,6 +38,7 @@ def batch_start_processing(req: func.HttpRequest) -> func.HttpResponse:
     )
     # Send a message to the queue for each file
     for fd in files_data:
+        time.sleep(20)
         queue_client.send_message(json.dumps(fd).encode("utf-8"))
 
     return func.HttpResponse(

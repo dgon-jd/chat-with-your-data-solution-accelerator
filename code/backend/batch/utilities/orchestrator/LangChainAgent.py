@@ -24,7 +24,7 @@ class LangChainAgent(OrchestratorBase):
         self.tools = [
             Tool(
                 name="Question Answering",
-                func=self.run_tool,
+                func=self.run_qa_tool,
                 description="useful for when you need to answer questions about anything. Input should be a fully formed question. Do not call the tool for text processing operations like translate, summarize, make concise.",
                 return_direct=True,
             ),
@@ -38,10 +38,8 @@ class LangChainAgent(OrchestratorBase):
             ),
         ]
 
-    def run_tool(self, user_message):
-        answer = self.question_answer_tool.answer_question(
-            user_message, chat_history=[]
-        )
+    def run_qa_tool(self, user_message):
+        answer = self.question_answer_tool.answer_question(user_message, chat_history=[])
         return answer.to_json()
 
     def run_text_processing_tool(self, user_message):

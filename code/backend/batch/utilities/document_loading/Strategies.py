@@ -6,7 +6,7 @@ class LoadingStrategy(Enum):
     READ = "read"
     WEB = "web"
     DOCX = "docx"
-
+    XLS = "xls"
 
 def get_document_loader(loader_strategy: str):
     if loader_strategy == LoadingStrategy.LAYOUT.value:
@@ -25,5 +25,8 @@ def get_document_loader(loader_strategy: str):
         from .WordDocument import WordDocumentLoading
 
         return WordDocumentLoading()
+    elif loader_strategy == LoadingStrategy.XLS.value:
+        from .Excel import ExcelDocumentLoading
+        return ExcelDocumentLoading()
     else:
         raise Exception(f"Unknown loader strategy: {loader_strategy}")

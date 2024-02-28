@@ -8,6 +8,11 @@ from ..tools.QuestionAnswerTool import QuestionAnswerTool
 from ..tools.TextProcessingTool import TextProcessingTool
 from ..tools.ContentSafetyChecker import ContentSafetyChecker
 from ..parser.OutputParserTool import OutputParserTool
+from ..tools.WebSearchTool import WebSearchTool
+from ..tools.DBTalkTool import DBTalkTool
+
+# from ..tools.FinanceTool import CurrentStockPriceTool, StockPerformanceTool
+
 from ..common.Answer import Answer
 
 
@@ -18,7 +23,7 @@ class OpenAIFunctionsOrchestrator(OrchestratorBase):
         self.functions = [
             {
                 "name": "search_documents",
-                "description": "Provide answers to any fact question coming from users.",
+                "description": "This is the main tool to provide answers to any question coming from users.",
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -46,8 +51,37 @@ class OpenAIFunctionsOrchestrator(OrchestratorBase):
                         },
                     },
                     "required": ["text", "operation"],
-                },
+                }, 
             },
+            {
+                "name": "web_search",
+                "description": "Use it only when user directly asks to search in the internet to answer about current events or real-time information. You should ask targeted questions.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "question": {
+                            "type": "string",
+                            "description": "User question that need to be searched in the internet",
+                        },
+                    },
+                    "required": ["text", "operation"],
+                }, 
+            },
+            {
+                "name": "db_talk",
+                "description": "Use this tool when you want to answer questions about Purchases, Shipping, Vendors, Buyers data, and database.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "question": {
+                            "type": "string",
+                            "description": "User question or request that need to be answered using database",
+                        },
+                    },
+                    "required": ["text", "operation"],
+                }, 
+            }
+            
         ]
 
     def orchestrate(
@@ -73,11 +107,12 @@ class OpenAIFunctionsOrchestrator(OrchestratorBase):
         # Call function to determine route
         llm_helper = LLMHelper()
 
-        system_message = """You help employees to navigate only private information sources.
+        system_message = """You help employees to navigate only private information sources, answering the following questions as best you can. You have access to the following tools. 
         You must prioritize the function call over your general knowledge for any question by calling the search_documents function.
         Call the text_processing function when the user request an operation on the current context, such as translate, summarize, or paraphrase. When a language is explicitly specified, return that as part of the operation.
-        When directly replying to the user, always reply in the language the user is speaking.
-        """
+        When directly replying to the user, always reply in the language the user is speaking. 
+        If you do not know answer - use web_search tool.
+        You have access to folowwing tools:"""
         # Create conversation history
         messages = [{"role": "system", "content": system_message}]
         for message in chat_history:
@@ -124,13 +159,18 @@ class OpenAIFunctionsOrchestrator(OrchestratorBase):
                     result.choices[0].message.function_call.arguments
                 )["operation"]
                 text_processing_tool = TextProcessingTool()
-                answer = text_processing_tool.answer_question(
-                    user_message, chat_history, text=text, operation=operation
-                )
-                self.log_tokens(
-                    prompt_tokens=answer.prompt_tokens,
-                    completion_tokens=answer.completion_tokens,
-                )
+                answer = text_processing_tool.answer_question(user_message, chat_history, text=text, operation=operation)
+                self.log_tokens(prompt_tokens=answer.prompt_tokens, completion_tokens=answer.completion_tokens)
+            elif result.choices[0].message.function_call.name == "web_search":
+                question = json.loads(result.choices[0].message.function_call.arguments)['question']
+                text_processing_tool = WebSearchTool()
+                answer = text_processing_tool.answer_question(question=question, chat_history=chat_history)
+                self.log_tokens(prompt_tokens=answer.prompt_tokens, completion_tokens=answer.completion_tokens)
+            elif result.choices[0].message.function_call.name == "db_talk":
+                question = json.loads(result.choices[0].message.function_call.arguments)['question']
+                text_processing_tool = DBTalkTool()
+                answer = text_processing_tool.answer_question(question=question, chat_history=chat_history)
+                self.log_tokens(prompt_tokens=answer.prompt_tokens, completion_tokens=answer.completion_tokens)
         else:
             text = result.choices[0].message.content
             answer = Answer(question=user_message, answer=text)

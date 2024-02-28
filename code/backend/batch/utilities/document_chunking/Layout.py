@@ -3,18 +3,21 @@ from .DocumentChunkingBase import DocumentChunkingBase
 from langchain.text_splitter import MarkdownTextSplitter
 from .Strategies import ChunkingSettings
 from ..common.SourceDocument import SourceDocument
+import re
+
+CLEANR = re.compile('<.*?>') 
 
 
 class LayoutDocumentChunking(DocumentChunkingBase):
+    
+
     def __init__(self) -> None:
         pass
+        
+    def chunk(self, documents: List[SourceDocument], chunking: ChunkingSettings) -> List[SourceDocument]:
+        full_document_content = "".join(list(map(lambda document: document.content, documents)))
+        # cleantext = re.sub(CLEANR, ' ', full_document_content)
 
-    def chunk(
-        self, documents: List[SourceDocument], chunking: ChunkingSettings
-    ) -> List[SourceDocument]:
-        full_document_content = "".join(
-            list(map(lambda document: document.content, documents))
-        )
         document_url = documents[0].source
         splitter = MarkdownTextSplitter.from_tiktoken_encoder(
             chunk_size=chunking.chunk_size, chunk_overlap=chunking.chunk_overlap

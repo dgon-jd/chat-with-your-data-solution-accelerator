@@ -154,6 +154,9 @@ class EnvHelper:
             "ORCHESTRATION_STRATEGY", "openai_function"
         )
 
+        # DB Connection
+        self.DB_CONNECTION_STRING = os.getenv("DB_CONNECTION_STRING", "")
+
     @staticmethod
     def check_env():
         for attr, value in EnvHelper().__dict__.items():
