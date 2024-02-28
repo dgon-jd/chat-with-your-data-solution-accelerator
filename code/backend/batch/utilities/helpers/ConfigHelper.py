@@ -90,7 +90,7 @@ class ConfigHelper:
     def get_default_config():
         default_config = {
             "prompts": {
-                "condense_question_prompt": """Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question. If the user asks multiple questions at once, break them up into multiple standalone questions, all in one line.
+                "condense_question_prompt": """Given the following conversation and a follow up request, rephrase the follow up request to be a standalone request. If the user asks multiple requests at once, break them up into multiple standalone requests, all in one line. If user request contains part number, focus only on it.
 
 Chat History:
 {chat_history}
@@ -202,6 +202,17 @@ Answer: {answer}""",
                     },
                     "loading": {"strategy": LoadingStrategy.LAYOUT},
                 },
+                {
+                    "document_type": "xls",
+                    "chunking": {
+                        "strategy": ChunkingStrategy.LAYOUT,
+                        "size": 500,
+                        "overlap": 100
+                    },
+                    "loading": {
+                        "strategy": LoadingStrategy.XLS
+                    }
+                }
             ],
             "logging": {"log_user_interactions": True, "log_tokens": True},
             "orchestrator": {"strategy": "openai_function"},

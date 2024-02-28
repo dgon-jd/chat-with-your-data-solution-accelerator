@@ -34,7 +34,7 @@ param replicaCount int = 1
   'free'
   'standard'
 ])
-param semanticSearch string = 'disabled'
+param semanticSearch string = 'free'
 
 resource search 'Microsoft.Search/searchServices@2021-04-01-preview' = {
   name: name

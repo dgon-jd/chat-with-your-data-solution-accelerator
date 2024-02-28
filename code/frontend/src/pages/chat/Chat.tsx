@@ -18,6 +18,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import styles from "./Chat.module.css";
 import Azure from "../../assets/Azure.svg";
+import TFLogo from "../../assets/TFLogo.png";
 
 import {
   ChatMessage,
@@ -111,7 +112,7 @@ const Chat = () => {
                 ]);
               }
               runningText = "";
-            } catch {}
+            } catch { }
           });
         }
         setAnswers([...answers, userMessage, ...result.choices[0].messages]);
@@ -268,10 +269,10 @@ const Chat = () => {
         <div className={`${styles.chatContainer} ${styles.MobileChatContainer}`}>
           {!lastQuestionRef.current ? (
             <Stack className={styles.chatEmptyState}>
-              <img src={Azure} className={styles.chatIcon} aria-hidden="true" />
+              <img src={TFLogo} className={styles.chatIcon} aria-hidden="true" />
               <h1 className={styles.chatEmptyStateTitle}>Start chatting</h1>
               <h2 className={styles.chatEmptyStateSubtitle}>
-                This chatbot is configured to answer your questions
+                This chatbot is configured to answer your questions, using retrieved data, duckduckgo search and different APIs.
               </h2>
             </Stack>
           ) : (
@@ -295,7 +296,7 @@ const Chat = () => {
                             answer.role === "assistant"
                               ? answer.content
                               : "Sorry, an error occurred. Try refreshing the conversation or waiting a few minutes. If the issue persists, contact your system administrator. Error: " +
-                                answer.content,
+                              answer.content,
                           citations:
                             answer.role === "assistant"
                               ? parseCitationFromMessage(answers[index - 1])

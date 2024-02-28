@@ -37,7 +37,7 @@ param websiteName string = '${environmentName}-website-${resourceToken}'
 param applicationInsightsName string = '${environmentName}-appinsights-${resourceToken}'
 
 @description('Use semantic search')
-param azureSearchUseSemanticSearch string = 'false'
+param azureSearchUseSemanticSearch string = 'true'
 
 @description('Semantic search config')
 param azureSearchSemanticSearchConfig string = 'default'
@@ -70,10 +70,10 @@ param azureOpenAIResourceName string = '${environmentName}-openai-${resourceToke
 param azureOpenAISkuName string = 'S0'
 
 @description('Azure OpenAI Model Deployment Name')
-param azureOpenAIModel string = 'gpt-35-turbo'
+param azureOpenAIModel string = 'gpt-35-turbo-16k'
 
 @description('Azure OpenAI Model Name')
-param azureOpenAIModelName string = 'gpt-35-turbo'
+param azureOpenAIModelName string = 'gpt-35-turbo-16k'
 
 param azureOpenAIModelVersion string = '0613'
 

@@ -152,14 +152,14 @@
     },
     "AzureOpenAIModel": {
       "type": "string",
-      "defaultValue": "gpt-35-turbo",
+      "defaultValue": "gpt-35-turbo-16k",
       "metadata": {
         "description": "Azure OpenAI Model Deployment Name - Created during the \"Chat with your data\" Solution Accelerator"
       }
     },
     "AzureOpenAIModelName": {
       "type": "string",
-      "defaultValue": "gpt-35-turbo",
+      "defaultValue": "gpt-35-turbo-16k",
       "metadata": {
         "description": "Azure OpenAI Model Name - Created during the \"Chat with your data\" Solution Accelerator"
       }

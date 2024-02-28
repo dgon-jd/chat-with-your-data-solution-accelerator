@@ -8,7 +8,7 @@
     background: #FFFFFF;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.14), 0px 0px 2px rgba(0, 0, 0, 0.12);
     border-radius: 8px;
-       display: flex;
+    display: flex;
     justify-content: space-between;
     align-items: center;
 }
@@ -33,6 +33,8 @@
 .questionInputSendButton {
     width: 24px;
     height: 23px;
+    color: #c60909;
+
 }
 
 .questionInputSendButtonDisabled {
@@ -49,7 +51,7 @@
     height: 4px;
     left: 0%;
     bottom: 0%;
-    background: radial-gradient(106.04% 106.06% at 100.1% 90.19%,#0F6CBD 33.63%,#8DDDD8 100%);
+    background: radial-gradient(106.04% 106.06% at 100.1% 90.19%, #ff0101 33.63%, #250101 100%);
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
 }
@@ -64,12 +66,12 @@
     width: 24px;
     height: 24px;
     margin-bottom: 12px;
-  }
-  
-  .microphoneAndSendContainer {
+}
+
+.microphoneAndSendContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-right: 12px;
     margin-top: 25px;
-  }
+}

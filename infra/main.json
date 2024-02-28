@@ -148,14 +148,14 @@
     },
     "azureOpenAIModel": {
       "type": "string",
-      "defaultValue": "gpt-35-turbo",
+      "defaultValue": "gpt-35-turbo-16k",
       "metadata": {
         "description": "Azure OpenAI Model Deployment Name"
       }
     },
     "azureOpenAIModelName": {
       "type": "string",
-      "defaultValue": "gpt-35-turbo",
+      "defaultValue": "gpt-35-turbo-16k",
       "metadata": {
         "description": "Azure OpenAI Model Name"
       }
@@ -1277,7 +1277,7 @@
             },
             "semanticSearch": {
               "type": "string",
-              "defaultValue": "disabled",
+              "defaultValue": "free",
               "allowedValues": [
                 "disabled",
                 "free",
