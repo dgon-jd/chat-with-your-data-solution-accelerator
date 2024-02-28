@@ -5,6 +5,8 @@ from langchain_community.embeddings import AzureOpenAIEmbeddings
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from .EnvHelper import EnvHelper
 
+from llama_index.core import Settings
+
 
 class LLMHelper:
     def __init__(self):
@@ -14,13 +16,13 @@ class LLMHelper:
 
         if self.auth_type == "rbac":
             self.openai_client = AzureOpenAI(
-                azure_endpoint=env_helper.OPENAI_API_BASE,
+                azure_endpoint=env_helper.AZURE_OPENAI_ENDPOINT,
                 api_version=env_helper.AZURE_OPENAI_API_VERSION,
                 azure_ad_token_provider=self.token_provider,
             )
         else:
             self.openai_client = AzureOpenAI(
-                azure_endpoint=env_helper.OPENAI_API_BASE,
+                azure_endpoint=env_helper.AZURE_OPENAI_ENDPOINT,
                 api_version=env_helper.AZURE_OPENAI_API_VERSION,
                 api_key=env_helper.OPENAI_API_KEY,
             )
@@ -32,6 +34,8 @@ class LLMHelper:
             else None
         )
         self.embedding_model = env_helper.AZURE_OPENAI_EMBEDDING_MODEL
+        Settings.llm = self.get_llm35()
+        Settings.embed_model = self.get_embedding_model()
 
     def get_llm(self):
         if self.auth_type == "rbac":
@@ -49,6 +53,14 @@ class LLMHelper:
                 max_tokens=self.llm_max_tokens,
                 openai_api_version=self.openai_client._api_version,
             )
+
+    def get_llm35(self):
+        return AzureChatOpenAI(
+            deployment_name="gpt-35-turbo",
+            temperature=0,
+            max_tokens=self.llm_max_tokens,
+            openai_api_version=self.openai_client._api_version,
+        )
 
     # TODO: This needs to have a custom callback to stream back to the UI
     def get_streaming_llm(self):
