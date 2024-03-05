@@ -51,7 +51,7 @@ class OpenAIFunctionsOrchestrator(OrchestratorBase):
                         },
                     },
                     "required": ["text", "operation"],
-                }, 
+                },
             },
             {
                 "name": "web_search",
@@ -65,7 +65,7 @@ class OpenAIFunctionsOrchestrator(OrchestratorBase):
                         },
                     },
                     "required": ["text", "operation"],
-                }, 
+                },
             },
             {
                 "name": "db_talk",
@@ -79,9 +79,8 @@ class OpenAIFunctionsOrchestrator(OrchestratorBase):
                         },
                     },
                     "required": ["text", "operation"],
-                }, 
-            }
-            
+                },
+            },
         ]
 
     def orchestrate(
@@ -159,18 +158,37 @@ class OpenAIFunctionsOrchestrator(OrchestratorBase):
                     result.choices[0].message.function_call.arguments
                 )["operation"]
                 text_processing_tool = TextProcessingTool()
-                answer = text_processing_tool.answer_question(user_message, chat_history, text=text, operation=operation)
-                self.log_tokens(prompt_tokens=answer.prompt_tokens, completion_tokens=answer.completion_tokens)
+                answer = text_processing_tool.answer_question(
+                    user_message, chat_history, text=text, operation=operation
+                )
+                self.log_tokens(
+                    prompt_tokens=answer.prompt_tokens,
+                    completion_tokens=answer.completion_tokens,
+                )
             elif result.choices[0].message.function_call.name == "web_search":
-                question = json.loads(result.choices[0].message.function_call.arguments)['question']
+                question = json.loads(
+                    result.choices[0].message.function_call.arguments
+                )["question"]
                 text_processing_tool = WebSearchTool()
-                answer = text_processing_tool.answer_question(question=question, chat_history=chat_history)
-                self.log_tokens(prompt_tokens=answer.prompt_tokens, completion_tokens=answer.completion_tokens)
+                answer = text_processing_tool.answer_question(
+                    question=question, chat_history=chat_history
+                )
+                self.log_tokens(
+                    prompt_tokens=answer.prompt_tokens,
+                    completion_tokens=answer.completion_tokens,
+                )
             elif result.choices[0].message.function_call.name == "db_talk":
-                question = json.loads(result.choices[0].message.function_call.arguments)['question']
+                question = json.loads(
+                    result.choices[0].message.function_call.arguments
+                )["question"]
                 text_processing_tool = DBTalkTool()
-                answer = text_processing_tool.answer_question(question=question, chat_history=chat_history)
-                self.log_tokens(prompt_tokens=answer.prompt_tokens, completion_tokens=answer.completion_tokens)
+                answer = text_processing_tool.answer_question(
+                    question=question, chat_history=chat_history
+                )
+                self.log_tokens(
+                    prompt_tokens=answer.prompt_tokens,
+                    completion_tokens=answer.completion_tokens,
+                )
         else:
             text = result.choices[0].message.content
             answer = Answer(question=user_message, answer=text)
