@@ -486,6 +486,7 @@ module function './app/function.bicep' = {
       ORCHESTRATION_STRATEGY: orchestrationStrategy
       AZURE_CONTENT_SAFETY_ENDPOINT: 'https://${location}.api.cognitive.microsoft.com/'
       APPINSIGHTS_INSTRUMENTATIONKEY: monitoring.outputs.applicationInsightsInstrumentationKey
+      APPINSIGHTS_CONNECTION_STRING: monitoring.outputs.applicationInsightsConnectionString
     }
   }
 }
@@ -745,10 +746,11 @@ output AZURE_OPENAI_RESOURCE string = azureOpenAIResourceName
 output AZURE_OPENAI_EMBEDDING_MODEL string = azureOpenAIEmbeddingModel
 output AZURE_OPENAI_MODEL string = azureOpenAIModel
 output USE_KEY_VAULT bool = useKeyVault
-output AZURE_OPENAI_KEY_NAME string = useKeyVault ? storekeys.outputs.OPENAI_KEY_NAME : ''
-output AZURE_BLOB_ACCOUNT_KEY_NAME string = useKeyVault ? storekeys.outputs.STORAGE_ACCOUNT_KEY_NAME : ''
-output AZURE_FORM_RECOGNIZER_KEY_NAME string = useKeyVault ? storekeys.outputs.FORM_RECOGNIZER_KEY_NAME : ''
-output AZURE_SEARCH_KEY_NAME string = useKeyVault ? storekeys.outputs.SEARCH_KEY_NAME : ''
-output AZURE_CONTENT_SAFETY_KEY_NAME string = useKeyVault ? storekeys.outputs.CONTENT_SAFETY_KEY_NAME : ''
+output AZURE_OPENAI_KEY string = useKeyVault ? storekeys.outputs.OPENAI_KEY_NAME : ''
+output AZURE_BLOB_ACCOUNT_KEY string = useKeyVault ? storekeys.outputs.STORAGE_ACCOUNT_KEY_NAME : ''
+output AZURE_FORM_RECOGNIZER_KEY string = useKeyVault ? storekeys.outputs.FORM_RECOGNIZER_KEY_NAME : ''
+output AZURE_SEARCH_KEY string = useKeyVault ? storekeys.outputs.SEARCH_KEY_NAME : ''
+output AZURE_CONTENT_SAFETY_KEY string = useKeyVault ? storekeys.outputs.CONTENT_SAFETY_KEY_NAME : ''
 output AZURE_SPEECH_SERVICE_REGION string = location
-output AZURE_SPEECH_SERVICE_KEY_NAME string = useKeyVault ? storekeys.outputs.SPEECH_KEY_NAME : ''
+output AZURE_SPEECH_SERVICE_KEY string = useKeyVault ? storekeys.outputs.SPEECH_KEY_NAME : ''
+output ORCHESTRATION_STRATEGY string = orchestrationStrategy
