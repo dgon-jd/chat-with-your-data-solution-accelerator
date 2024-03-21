@@ -7,23 +7,22 @@ def test_openai_base_url_generates_url_based_on_resource_name_if_not_set(
 ):
     # given
     openai_resource_name = "some-openai-resource"
-    monkeypatch.delenv("AZURE_OPENAI_ENDPOINT")
     monkeypatch.setenv("AZURE_OPENAI_RESOURCE", openai_resource_name)
 
     # when
-    actual_open_api_base = EnvHelper().AZURE_OPENAI_ENDPOINT
+    actual_openai_endpoint = EnvHelper().AZURE_OPENAI_ENDPOINT
 
     # then
-    assert actual_open_api_base == f"https://{openai_resource_name}.openai.azure.com/"
+    assert actual_openai_endpoint == f"https://{openai_resource_name}.openai.azure.com/"
 
 
 def test_openai_base_url_uses_env_var_if_set(monkeypatch: MonkeyPatch):
     # given
-    expected_AZURE_OPENAI_ENDPOINT = "some-openai-resource-base"
-    monkeypatch.setenv("AZURE_OPENAI_ENDPOINT", expected_AZURE_OPENAI_ENDPOINT)
+    expected_openai_endpoint = "some-openai-resource-base"
+    monkeypatch.setenv("AZURE_OPENAI_ENDPOINT", expected_openai_endpoint)
 
     # when
-    actual_open_api_base = EnvHelper().AZURE_OPENAI_ENDPOINT
+    actual_openai_endpoint = EnvHelper().AZURE_OPENAI_ENDPOINT
 
     # then
-    assert actual_open_api_base == expected_AZURE_OPENAI_ENDPOINT
+    assert actual_openai_endpoint == expected_openai_endpoint

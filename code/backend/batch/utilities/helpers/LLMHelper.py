@@ -1,7 +1,7 @@
 from openai import AzureOpenAI
 from typing import List
-from langchain_community.chat_models import AzureChatOpenAI
-from langchain_community.embeddings import AzureOpenAIEmbeddings
+from langchain_openai import AzureChatOpenAI
+from langchain_openai import AzureOpenAIEmbeddings
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from .EnvHelper import EnvHelper
 
@@ -10,27 +10,27 @@ from llama_index.core import Settings
 
 class LLMHelper:
     def __init__(self):
-        env_helper: EnvHelper = EnvHelper()
-        self.auth_type = env_helper.AZURE_AUTH_TYPE
-        self.token_provider = env_helper.AZURE_TOKEN_PROVIDER
+        self.env_helper: EnvHelper = EnvHelper()
+        self.auth_type = self.env_helper.AZURE_AUTH_TYPE
+        self.token_provider = self.env_helper.AZURE_TOKEN_PROVIDER
 
         if self.auth_type == "rbac":
             self.openai_client = AzureOpenAI(
-                azure_endpoint=env_helper.AZURE_OPENAI_ENDPOINT,
-                api_version=env_helper.AZURE_OPENAI_API_VERSION,
+                azure_endpoint=self.env_helper.AZURE_OPENAI_ENDPOINT,
+                api_version=self.env_helper.AZURE_OPENAI_API_VERSION,
                 azure_ad_token_provider=self.token_provider,
             )
         else:
             self.openai_client = AzureOpenAI(
-                azure_endpoint=env_helper.AZURE_OPENAI_ENDPOINT,
-                api_version=env_helper.AZURE_OPENAI_API_VERSION,
-                api_key=env_helper.OPENAI_API_KEY,
+                azure_endpoint=self.env_helper.AZURE_OPENAI_ENDPOINT,
+                api_version=self.env_helper.AZURE_OPENAI_API_VERSION,
+                api_key=self.env_helper.OPENAI_API_KEY,
             )
 
-        self.llm_model = env_helper.AZURE_OPENAI_MODEL
+        self.llm_model = self.env_helper.AZURE_OPENAI_MODEL
         self.llm_max_tokens = (
-            env_helper.AZURE_OPENAI_MAX_TOKENS
-            if env_helper.AZURE_OPENAI_MAX_TOKENS != ""
+            self.env_helper.AZURE_OPENAI_MAX_TOKENS
+            if self.env_helper.AZURE_OPENAI_MAX_TOKENS != ""
             else None
         )
         self.embedding_model = env_helper.AZURE_OPENAI_EMBEDDING_MODEL
@@ -44,6 +44,7 @@ class LLMHelper:
                 temperature=0,
                 max_tokens=self.llm_max_tokens,
                 openai_api_version=self.openai_client._api_version,
+                azure_endpoint=self.env_helper.AZURE_OPENAI_ENDPOINT,
                 azure_ad_token_provider=self.token_provider,
             )
         else:
@@ -52,6 +53,8 @@ class LLMHelper:
                 temperature=0,
                 max_tokens=self.llm_max_tokens,
                 openai_api_version=self.openai_client._api_version,
+                azure_endpoint=self.env_helper.AZURE_OPENAI_ENDPOINT,
+                api_key=self.env_helper.OPENAI_API_KEY,
             )
 
     def get_llm35(self):
@@ -67,6 +70,8 @@ class LLMHelper:
     def get_streaming_llm(self):
         if self.auth_type == "rbac":
             return AzureChatOpenAI(
+                azure_endpoint=self.env_helper.AZURE_OPENAI_ENDPOINT,
+                api_key=self.env_helper.OPENAI_API_KEY,
                 streaming=True,
                 callbacks=[StreamingStdOutCallbackHandler],
                 deployment_name=self.llm_model,
@@ -77,6 +82,8 @@ class LLMHelper:
             )
         else:
             return AzureChatOpenAI(
+                azure_endpoint=self.env_helper.AZURE_OPENAI_ENDPOINT,
+                api_key=self.env_helper.OPENAI_API_KEY,
                 streaming=True,
                 callbacks=[StreamingStdOutCallbackHandler],
                 deployment_name=self.llm_model,
@@ -88,13 +95,17 @@ class LLMHelper:
     def get_embedding_model(self):
         if self.auth_type == "rbac":
             return AzureOpenAIEmbeddings(
+                azure_endpoint=self.env_helper.AZURE_OPENAI_ENDPOINT,
                 azure_deployment=self.embedding_model,
                 chunk_size=1,
                 azure_ad_token_provider=self.token_provider,
             )
         else:
             return AzureOpenAIEmbeddings(
-                azure_deployment=self.embedding_model, chunk_size=1
+                azure_endpoint=self.env_helper.AZURE_OPENAI_ENDPOINT,
+                api_key=self.env_helper.OPENAI_API_KEY,
+                azure_deployment=self.embedding_model,
+                chunk_size=1,
             )
 
     def get_chat_completion_with_functions(
